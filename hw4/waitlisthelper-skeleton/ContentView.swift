@@ -16,37 +16,47 @@ struct ContentView: View {
     
     var body: some View {
             //YOUR CODE HERE (NavView)//
-        
+        NavigationView{
                 //YOUR CODE HERE (TabView)//
         
                     ZStack {
                         //YOUR CODE HERE (background)//
                         Image("calculate_background")
-                            .resizeable()
+                            .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width:50, height: 100)
-                        Text(String(WILL YOU GET OF THE WAITLIST))
+                        
                         VStack {
                             Spacer()
                             //YOUR CODE HERE (title)//
-
+                            Text("WILL YOU GET OFF THE WAITLIST")
+                                .font(.largeTitle)
+                                .bold()
+                                .fontWeight(.black)
+                                .padding()
                             Spacer()
                             HStack {
                                 //YOUR CODE HERE (description)//
-                                
+                                Text(" Place on Waitlist : \( waitlistPlace , specifier: "%.f")")
                                 Spacer()
                             }
                             //YOUR CODE HERE (slider)//
-                           
+                            Slider(value: $waitlistPlace , in:0...200, step:1)
+                                .padding()
+                            
+                            
                             HStack {
                                 //YOUR CODE HERE (description)//
-                                
+                                Text(" Class size : \( classSize , specifier: "%.f")")
                                 Spacer()
                             }
                             //YOUR CODE HERE (slider)//
+                            Slider(value: $waitlistPlace , in:0...1000, step:1)
+                                .padding()
                             
-//                            NavigationLink(destination: ResultView(prob: $probability, feedback: $text), isActive: $calculate) { EmptyView() } .padding()
                             
+                            NavigationLink(destination: ResultView(prob: $probability, feedback: $text), isActive: $calculate) { EmptyView() } .padding()
+                           
                             Button("CALCULATE") {
                                 //YOUR CODE HERE (calculate)//
                                 
@@ -57,26 +67,33 @@ struct ContentView: View {
                             Spacer()
                             
                         } .padding()
-                        
+                    
                     }
                     .navigationBarTitle("")
                     .navigationBarHidden(true)
-//                    .tabItem{
-//                        Image(systemName: "house.fill")
-//                        Text("Home")
-//                    }
+                    .tabItem{
+                        Image(systemName: "house.fill")
+                        Text("Home")
+                    }
                     
                     //DIY VIEW GOES HERE//
                     
                     
                 
-                
+        }
             
                 
         }
     func calculateProbability(waitlistPlace: Int, classSize: Int) {
         //YOUR CODE HERE//
-        
+        let tenth = classSize / 10
+                if  (waitlistPlace <= tenth) {
+                    probability = 100
+                } else if (waitlistPlace > tenth * 2) {
+                    probability = 0
+                } else {
+                    probability = 100 - Int(((Float(waitlistPlace - tenth) / Float(tenth))*100))
+                }
         
     }
     
@@ -91,7 +108,7 @@ struct ContentView: View {
 }
 
 struct ResultView: View {
-//    @Environment(\.presentationMode) var presentation: Binding<PresentationMode>
+    @Environment(\.presentationMode) var presentation: Binding<PresentationMode>
     @Binding var prob: Int
     @Binding var feedback: String
     
@@ -109,7 +126,13 @@ struct ResultView: View {
             VStack {
                 HStack {
                     //YOUR CODE HERE (button back)//
-                    
+                    Button(action: {
+                                     self.presentation.wrappedValue.dismiss()
+                                   }) {
+                                   Image(systemName: "arrow.left")
+                                       .foregroundColor(.white)
+                                   }
+                                   .navigationBarHidden(true)
                     Spacer()
                 } .padding()
                 Spacer()
@@ -135,7 +158,13 @@ struct CustomButton: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             //YOUR CODE HERE (button style)//
-            
+            .padding()
+            .background(Color.yellow)
+            .foregroundColor(.black)
+            .clipShape(Circle())
+            .scaleEffect(configuration.isPressed ? 1.2:1)
+            .animation(.easeOut(duration: 0.3), value: configuration.isPressed)
+        
     }
 }
 
